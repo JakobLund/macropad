@@ -40,6 +40,7 @@ from utils.constants import (
     COLOR_WINDOWS,
     COLOR_WINMAN,
     OS_WINDOWS, COLOR_GREEN, COLOR_RED,
+    ONE_MINUTE
 )
 
 
@@ -82,6 +83,7 @@ class AppSettings(KeyAppSettings):
         COLOR_TERMINAL: COLOR_10,
     }
     host_os = OS_WINDOWS
+    pixels_disabled_timeout = 1 * ONE_MINUTE
 
 
 DEFAULT_APP = lambda app_pad: HomeApp(app_pad, AppSettings())

@@ -50,7 +50,7 @@ from utils.settings import BaseSettings
 
 
 def init_display_group_macro_app(
-    display_width: int, display_height: int
+        display_width: int, display_height: int
 ) -> displayio.Group:
     """Set up displayio group with an app name and labels for each key.
 
@@ -106,15 +106,14 @@ class KeyAppSettings(BaseSettings):
     }
     host_os: str = OS_WINDOWS
     pixels_disabled: bool = False
-    pixels_disabled_timeout: int = 20 * ONE_MINUTE
 
     def __init__(
-        self,
-        color_scheme: Optional[Dict[str, int]] = None,
-        host_os: Optional[str] = None,
-        pixels_disabled: Optional[bool] = None,
-        pixels_disabled_timeout: Optional[int] = None,
-        **kwargs,
+            self,
+            color_scheme: Optional[Dict[str, int]] = None,
+            host_os: Optional[str] = None,
+            pixels_disabled: Optional[bool] = None,
+            pixels_disabled_timeout: Optional[int] = None,
+            **kwargs,
     ):
         if color_scheme is not None:
             self.color_scheme = color_scheme
@@ -260,26 +259,50 @@ class KeyApp(BaseApp):
         Set the pixel colors for any keys that have Keys defined.
 
         """
+        self.display_group[12].fill = 0xFFFFFF
+        self.display_group[13].text = self.name
+
         for i, key in enumerate(self.keys):
             try:
                 key.pixel = key.color()
+
             except AttributeError:
                 self.macropad.pixels[i] = 0
+            try:
+                key.label = key.text()
+            except AttributeError:
+                self.display_group[i].text = ""
+
         self.settings.pixels_disabled = False
 
     def disable_pixels(self):
         """Turn off all the pixels on the keypad."""
+
+        self.display_group[12].fill = 0x000000
+        self.display_group[13].text = ""
+
         for i in range(len(self.keys)):
             self.app_pad.pixels[i] = 0
         self.app_pad.pixels.show()
+        for group in self.display_group:
+            group.text = ""
         self.settings.pixels_disabled = True
 
     def process_event(
-        self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
+            self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
     ):
         if self.settings.pixels_disabled:
             self.pixels_on_focus()
             self.app_pad.pixels.show()
+
+            if self.settings.pixels_disabled_timeout:
+                self.app_pad.add_timer(
+                    TIMER_DISABLE_PIXELS,
+                    self.settings.pixels_disabled_timeout,
+                    self.disable_pixels,
+                )
+            return
+
         if self.settings.pixels_disabled_timeout:
             self.app_pad.add_timer(
                 TIMER_DISABLE_PIXELS,
@@ -296,6 +319,7 @@ class KeyApp(BaseApp):
         Args:
             event (KeyEvent): An event triggered by pressing a key
         """
+
         key = self[event.number]
 
         if key is None:
@@ -333,14 +357,14 @@ class KeyApp(BaseApp):
             event (EncoderEvent): An event triggered by rotating the encoder
         """
         if (
-            event.position > event.previous_position
-            and self.encoder_increase is not None
+                event.position > event.previous_position
+                and self.encoder_increase is not None
         ):
             self.encoder_increase.execute(self)
             self.encoder_increase.undo(self)
         elif (
-            event.position < event.previous_position
-            and self.encoder_decrease is not None
+                event.position < event.previous_position
+                and self.encoder_decrease is not None
         ):
             self.encoder_decrease.execute(self)
             self.encoder_decrease.undo(self)
@@ -470,11 +494,11 @@ class Key:
             return f"{self.__class__.__name__}({self.key_number} - {self.key})"
 
     def __init__(
-        self,
-        text: str = "",
-        color: Union[int, str] = 0,
-        command: Optional[Command] = None,
-        double_tap_command: Optional[Command] = None,
+            self,
+            text: str = "",
+            color: Union[int, str] = 0,
+            command: Optional[Command] = None,
+            double_tap_command: Optional[Command] = None,
     ):
         """Initialize the Key.
 
@@ -582,12 +606,12 @@ class SettingsValueKey(Key):
     """
 
     def __init__(
-        self,
-        setting: str,
-        command: Optional[Command] = None,
-        double_tap_command: Optional[Command] = None,
-        color_mapping: Optional[Dict[str, Union[int, str]]] = None,
-        text_template: str = "{value}",
+            self,
+            setting: str,
+            command: Optional[Command] = None,
+            double_tap_command: Optional[Command] = None,
+            color_mapping: Optional[Dict[str, Union[int, str]]] = None,
+            text_template: str = "{value}",
     ):
         """Initialize the SettingsValueKey.
 
@@ -720,12 +744,12 @@ class SettingsSelectKey(Key):
             self.app.macropad.pixels.show()
 
     def __init__(
-        self,
-        text: str = "",
-        color: Union[int, str] = 0,
-        setting: str = "",
-        value: Any = None,
-        command: Optional[Command] = None,
+            self,
+            text: str = "",
+            color: Union[int, str] = 0,
+            setting: str = "",
+            value: Any = None,
+            command: Optional[Command] = None,
     ):
         """Initialize the SettingsSelectKey.
 
@@ -809,14 +833,14 @@ class MacroKey(Key):
             self.app.macropad.pixels.show()
 
     def __init__(
-        self,
-        text: str = "",
-        color: Union[int, str] = 0,
-        command: Optional[Command] = None,
-        double_tap_command: Optional[Command] = None,
-        linux_command=EMPTY_VALUE,
-        mac_command=EMPTY_VALUE,
-        windows_command=EMPTY_VALUE,
+            self,
+            text: str = "",
+            color: Union[int, str] = 0,
+            command: Optional[Command] = None,
+            double_tap_command: Optional[Command] = None,
+            linux_command=EMPTY_VALUE,
+            mac_command=EMPTY_VALUE,
+            windows_command=EMPTY_VALUE,
     ):
         super().__init__(text, color, command, double_tap_command)
 
@@ -870,14 +894,14 @@ class ByteKey(Key):
             self.app.macropad.pixels.show()
 
     def __init__(
-        self,
-        text: str = "",
-        color: Union[int, str] = 0,
-        command: Optional[Command] = None,
-        double_tap_command: Optional[Command] = None,
-        linux_command=EMPTY_VALUE,
-        mac_command=EMPTY_VALUE,
-        windows_command=EMPTY_VALUE,
+            self,
+            text: str = "",
+            color: Union[int, str] = 0,
+            command: Optional[Command] = None,
+            double_tap_command: Optional[Command] = None,
+            linux_command=EMPTY_VALUE,
+            mac_command=EMPTY_VALUE,
+            windows_command=EMPTY_VALUE,
     ):
         super().__init__(text, color, command, double_tap_command)
 

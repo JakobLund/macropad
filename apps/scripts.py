@@ -116,21 +116,33 @@ class ScriptsApp(KeyApp):
 
     @classmethod
     def initialize_settings_dependent_keys(
-        cls, app_pad: AppPad, byte_code_sender: ByteCodeSender, settings: Optional[KeyAppSettings] = None
+            cls, app_pad: AppPad, byte_code_sender: ByteCodeSender, settings: Optional[KeyAppSettings] = None
     ):
         chrome_app = ChromeApp(app_pad, settings)
         spotify_app = SpotifyApp(app_pad, settings)
 
         cls.key_3 = ByteKey(
-            "PS5 On",
+            "PS On",
             COLOR_GREEN,
             ByteCode(byte_code_sender, ByteCodesEnum.CODE_PS5_ON),
 
         )
         cls.key_6 = ByteKey(
-            "PS5 Off",
+            "PS Off",
             COLOR_RED,
             ByteCode(byte_code_sender, ByteCodesEnum.CODE_PS5_OFF),
+        )
+
+        cls.key_4 = ByteKey(
+            "Headset",
+            COLOR_RED,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_HEADSET),
+        )
+
+        cls.key_7 = ByteKey(
+            "Speakers",
+            COLOR_RED,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_SPEAKERS),
         )
 
         cls.key_5 = MacroKey(
