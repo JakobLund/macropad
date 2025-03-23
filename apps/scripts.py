@@ -37,7 +37,14 @@ from utils.constants import (
     COLOR_SUBLIME_MERGE,
     COLOR_TERMINAL,
     OS_MAC,
+    COLOR_DISCORD,
+    COLOR_NAV,
+    COLOR_WINMAN,
+    COLOR_MEDIA,
+    COLOR_PYCHARM,
+    COLOR_LINUX,
 )
+import utils.constants
 
 
 class ScriptsApp(KeyApp):
@@ -55,54 +62,8 @@ class ScriptsApp(KeyApp):
         PreviousAppCommand(),
         double_tap_command=PreviousAppCommand(),
     )
-    key_4 = MacroKey(
-        "Files",
-        COLOR_FILES,
-        Press(Keycode.WINDOWS, Keycode.TWO),
-        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.F),
-    )
-    key_5 = MacroKey(
-        "Spotify",
-        COLOR_SPOTIFY,
-        Press(Keycode.WINDOWS, Keycode.SEVEN),
-        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S),
-    )
 
-    key_7 = MacroKey(
-        "Code",
-        COLOR_CODE,
-        Press(Keycode.WINDOWS, Keycode.FIVE),
-        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.V),
-    )
-    key_8 = MacroKey(
-        "Merge",
-        COLOR_SUBLIME_MERGE,
-        Press(Keycode.WINDOWS, Keycode.SIX),
-        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.M),
-    )
-
-    key_9 = MacroKey(
-        "Chrome",
-        COLOR_CHROME,
-        Sequence(
-            Press(Keycode.WINDOWS, Keycode.ONE),
-            Wait(0.1),
-            Release(Keycode.ONE, Keycode.WINDOWS),
-        ),
-        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C),
-    )
-    key_10 = MacroKey(
-        "Notion",
-        COLOR_NOTION,
-        Press(Keycode.WINDOWS, Keycode.THREE),
-        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.N),
-    )
-    key_11 = MacroKey(
-        "Slack",
-        COLOR_SLACK,
-        Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.L),
-        windows_command=None,
-    )
+    key_11 = Key("Replay", COLOR_PYCHARM, Press(Keycode.CONTROL, Keycode.F6))
 
     encoder_button = Media(ConsumerControlCode.MUTE)
 
@@ -134,65 +95,43 @@ class ScriptsApp(KeyApp):
         )
 
         cls.key_4 = ByteKey(
-            "Headset",
-            COLOR_RED,
-            ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_HEADSET),
-        )
-
-        cls.key_7 = ByteKey(
             "Speakers",
-            COLOR_RED,
+            COLOR_WINMAN,
             ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_SPEAKERS),
         )
 
-        cls.key_5 = MacroKey(
-            "Spotify",
-            COLOR_SPOTIFY,
-            Press(Keycode.WINDOWS, Keycode.SEVEN),
-            mac_command=Press(
-                Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S
-            ),
-            double_tap_command=MacroCommand(
-                Sequence(
-                    Press(Keycode.WINDOWS, Keycode.SEVEN),
-                    SwitchAppCommand(spotify_app),
-                ),
-                **{
-                    OS_MAC: Sequence(
-                        Press(
-                            Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S
-                        ),
-                        SwitchAppCommand(spotify_app),
-                    ),
-                }
-            ),
+        cls.key_7 = ByteKey(
+            "Headset",
+            COLOR_NAV,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_HEADSET),
         )
 
-        cls.key_9 = MacroKey(
-            "Chrome",
-            COLOR_CHROME,
-            Sequence(
-                Press(Keycode.WINDOWS, Keycode.ONE),
-                Wait(0.1),
-                Release(Keycode.ONE, Keycode.WINDOWS),
-            ),
-            mac_command=Press(
-                Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C
-            ),
-            double_tap_command=MacroCommand(
-                Sequence(
-                    Press(Keycode.WINDOWS, Keycode.ONE),
-                    Wait(0.1),
-                    Release(Keycode.ONE, Keycode.WINDOWS),
-                    SwitchAppCommand(chrome_app),
-                ),
-                **{
-                    OS_MAC: Sequence(
-                        Press(
-                            Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C
-                        ),
-                        SwitchAppCommand(chrome_app),
-                    ),
-                }
-            ),
+        cls.key_5 = ByteKey(
+            "BD Fix",
+            COLOR_DISCORD,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_INSTALL_BETTER_DISCORD),
+        )
+
+        cls.key_8 = ByteKey(
+            "Stream",
+            COLOR_MEDIA,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_RESTART_DISCORD_STREAM),
+        )
+
+        cls.key_9 = ByteKey(
+            "RTX",
+            COLOR_LINUX,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_RTX),
+        )
+
+        cls.key_10 = ByteKey(
+            "VR",
+            COLOR_MEDIA,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_CHANGE_TO_VR),
+        )
+
+        cls.key_11 = ByteKey(
+            "Replay",
+            COLOR_PYCHARM,
+            ByteCode(byte_code_sender, ByteCodesEnum.CODE_SAVE_REPLAY),
         )
